@@ -1,11 +1,14 @@
 <?php
+
 error_reporting(E_ALL ^ E_DEPRECATED);
 ?>
 <html>
 <head>
 	<style>
 	body{
+
 			background-color: #FEFCFF;
+
 		}
 	label{
 			font-family: century gothic;
@@ -26,6 +29,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		top: 45px;
 		right: 135px;
 	}
+
 	h4.home{
 
 		position: absolute;
@@ -33,7 +37,9 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		left: 83px;
 		color: #FFFFFF;
 		font-family: century gothic;
+		
 	}
+	
 	h4.logout{
 		position: absolute;
 		top: 23px;
@@ -45,6 +51,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 
 		color: #FF0000;
 	}
+
 	input.searchbar{
 
 		position: absolute;
@@ -112,10 +119,6 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 	}
 	legend{
 		font-family: verdana;
-		background-color: #FF8040;
-		color: #000000;
-		-moz-border-radius: 15px;
-		border-radius: 15px;
 	}
 	th{
 		font-family: candara;
@@ -123,10 +126,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		width: 200px;
 		background-color: #000000;
 		color: #FFFFFF;
-	}
-	fieldset.donation{
-		width: 500px;
-		margin:auto;
+
 	}
 	button{
 		float: right;
@@ -136,18 +136,22 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		padding: 3px;
 		background-color: #4AA02C;
 	}
+	legend{
+		background-color: #FF8040;
+		color: #000000;	
+		-moz-border-radius: 15px;
+		border-radius: 15px;	
+	}
 	#wrapper{
 		width:1350px;
 		height:auto;
 		position:relative;
 	}
 	</style>
-	<script>
-	function myFunction(){
-		window.open("paymentPrint.php");
-	}
-	</script>
 </head>
+
+	<script language="javascript" type="text/javascript" src="datetimepicker.js">
+	</script>
 <body>
 <div id="wrapper">
 	<div style="height: 80px; background-color: #2C3539">
@@ -220,7 +224,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
         </ul>
     </li>
     <li>
-   <li><a href="#">Payment</a>
+    <li><a href="#">Payment</a>
     	<ul class="sub-menu">
 		<li>
                <a href="finalpayment.php"> Paid Payments </a>
@@ -248,82 +252,79 @@ error_reporting(E_ALL ^ E_DEPRECATED);
     </li>
 	</ul>
 	</div>
-	<form action='searchreservation.php' method='GET'>
-			<input type='text' size='30' name='search' class="searchbar">
-			<input type='submit' name='submit' value='Search'class="searchbutton" >
-			<img src="search.png" class="search"/>
-	</form>	
-	<button onclick="myFunction()">Print this page</button>
-	<fieldset style="text-align:left; margin: left;" class="cancel">
-		<legend> Confirmation Details</legend>
+	<br/>
+	<fieldset style="text-align:left; margin: left; -moz-border-radius: 15px; border-radius: 15px; border:solid 2px black;" class="donation">
+		<legend> Update Donation Form </legend> 
+		<form name="updatedonation" action="updatedonation.php"> 	
 		<div id="middlerecord" class="scroll" style="float:center;">
 			<?php
+				$id = $_REQUEST['id'];
 				$db = mysql_connect('localhost','root','root');
 				mysql_select_db('sacredheart');
-				$query = "SELECT * FROM confirmation INNER JOIN reservation ON confirmation.reserve_id=reservation.id INNER JOIN recollection_package ON reservation.recollection_id=recollection_package.id where confirmation.payment_status = 'Unpaid' ORDER BY confirmation.id ASC";
+				$query = "SELECT * FROM donation where id='$id'";
 				$r = mysql_query($query);
 				$rows = mysql_num_rows($r);
-				$query2 = "SELECT * FROM confirmation INNER JOIN reservation ON confirmation.reserve_id=reservation.id INNER JOIN retreat_package ON reservation.retreat_id=retreat_package.id where confirmation.payment_status = 'Unpaid' ORDER BY confirmation.id ASC";
-				$r2 = mysql_query($query2);
-				$rows2 = mysql_num_rows($r2);
-				echo "<h4>Recollection</h4>";
-				echo "<table border='1'>";
-				echo "<tr><th>Client's Name</th><th>Check-In Date</th><th>Check-Out Date</th><th>Guests</th><th>Package Name</th><th>Package Amount</th><th>Payment Status</th></tr>";
+				echo "<table border='0'>";
 				for($i=0; $i < $rows; $i++){
-					echo "<tr><td><p>";
-					echo mysql_result($r, $i, 'confirmation.client_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'reservation.checkin_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'reservation.checkout_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'confirmation.guest');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'recollection_package.service_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'recollection_package.amount');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'confirmation.payment_status');
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm.php? id=";
-					echo mysql_result($r, $i, 'id');
-					echo "'>Add Payment</a>";
-					echo "</p></td></tr>";
-				}
-				echo "</table>";
-				echo "<h4>Retreat</h4>";
-				echo "<table border='1'>";
-				echo "<tr><th>Client's Name</th><th>Check-In Date</th><th>Check-Out Date</th><th>Guests</th><th>Package Name</th><th>Package Amount</th><th>Payment Status</th></tr>";
-				for($j=0; $j < $rows2; $j++){
-					echo "<tr><td><p>";
-					echo mysql_result($r2, $j, 'confirmation.client_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'reservation.checkin_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'reservation.checkout_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'confirmation.guest');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'retreat_package.service_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'retreat_package.amount');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'confirmation.payment_status');
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm.php? id=";
-					echo mysql_result($r2, $j, 'id');
-					echo "'>Add Payment</a>";
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm2.php? id=";
-					echo mysql_result($r2, $j, 'id');
-					echo "'>Details</a>";
-					echo "</p></td></tr>";
+					echo "<tr><th>Donor ID</th>";
+					if(mysql_result($r, $i, 'type') == "Money")
+					{
+						echo "<th>Amount of Donation</th>";
+					}
+					else
+					{
+						echo "<th>In-Kind Donation</th>";
+					}
+					echo "<th>Acceptance</th><th>Release</th><th>Spiritual Center's Receiver</th><th>Foundation Receiver</th></tr>";
+					
+					echo "<tr><td><input type='text' name='donor_id' id='donor_id' value='";
+					echo mysql_result($r, $i, 'donor_id');
+					echo "'></td>";
+					
+					if(mysql_result($r, $i, 'type') == "Money")
+					{
+						echo "<td><input type='text' name='donation_amount' id='donation_amount' value='";
+						echo mysql_result($r, $i, 'donation_amount');
+						echo "'></td>";
+					}
+					else
+					{
+						echo "<td><input type='text' name='donation_item' id='donation_item' value='";
+						echo mysql_result($r, $i, 'donation_item');
+						echo "'></td>";
+					}				
+					echo "<td><input type='text' name='date_received' id='date_received' value='";
+					echo mysql_result($r, $i, 'date_received');
+					echo "'>";
+					?>
+					<a href="javascript:NewCal('date_received','yyyymmdd',24)">
+					<img src="dateCalendar.jpg" width="16" height="16" border="0" alt="Pick a date">
+					</a>
+					<?php
+					echo "</td><td><input type='text' name='date_released' id='date_released' value='";
+					echo mysql_result($r, $i, 'date_released');
+					echo "'>";
+					?>
+					<a href="javascript:NewCal('date_released','yyyymmdd',24)">
+					<img src="dateCalendar.jpg" width="16" height="16" border="0" alt="Pick a date">
+					</a>
+					<?php
+					echo "</td><td><input type='text' name='receiver' id='receiver' value='";
+					echo mysql_result($r, $i, 'receiver');
+					echo "'></td><td><input type='text' name='foundation_receiver' id='foundation_receiver' value='";
+					echo mysql_result($r, $i, 'foundation_receiver');
+					echo "'></td><td>";
+					echo "<input type='submit' value='Update' />";
+					echo "</td></tr>";
 				}
 				echo "</table>";
 				mysql_close($db);
 			?>	
+			<input type="hidden" id="id" name="id" value="<?php echo $_REQUEST['id']; ?>" />
 		</div>
-	</fieldset>	
+		</form>
+		<p>Guide: To use datepicker, you have to empty the date textboxes you want to input into it.</p>
+	</fieldset>
 </div>
 </body>
 </html>

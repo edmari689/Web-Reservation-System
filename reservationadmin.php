@@ -1,11 +1,14 @@
 <?php
+
 error_reporting(E_ALL ^ E_DEPRECATED);
 ?>
 <html>
 <head>
 	<style>
 	body{
+
 			background-color: #FEFCFF;
+
 		}
 	label{
 			font-family: century gothic;
@@ -26,6 +29,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		top: 45px;
 		right: 135px;
 	}
+
 	h4.home{
 
 		position: absolute;
@@ -33,7 +37,9 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		left: 83px;
 		color: #FFFFFF;
 		font-family: century gothic;
+		
 	}
+	
 	h4.logout{
 		position: absolute;
 		top: 23px;
@@ -45,6 +51,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 
 		color: #FF0000;
 	}
+
 	input.searchbar{
 
 		position: absolute;
@@ -123,30 +130,15 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		width: 200px;
 		background-color: #000000;
 		color: #FFFFFF;
+
 	}
-	fieldset.donation{
-		width: 500px;
-		margin:auto;
-	}
-	button{
-		float: right;
-		-moz-border-radius: 7px;
-		border-radius: 7px;
-		border:solid 1.5px black;
-		padding: 3px;
-		background-color: #4AA02C;
-	}
+
 	#wrapper{
 		width:1350px;
 		height:auto;
 		position:relative;
 	}
 	</style>
-	<script>
-	function myFunction(){
-		window.open("paymentPrint.php");
-	}
-	</script>
 </head>
 <body>
 <div id="wrapper">
@@ -220,7 +212,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
         </ul>
     </li>
     <li>
-   <li><a href="#">Payment</a>
+    <li><a href="#">Payment</a>
     	<ul class="sub-menu">
 		<li>
                <a href="finalpayment.php"> Paid Payments </a>
@@ -248,82 +240,122 @@ error_reporting(E_ALL ^ E_DEPRECATED);
     </li>
 	</ul>
 	</div>
-	<form action='searchreservation.php' method='GET'>
+	<br/>
+	<fieldset style="text-align:left; margin: left;" class="reservation">
+		<legend> Current Reservations </legend> 
+
+		<form action='searchreservation.php' method='GET'>
 			<input type='text' size='30' name='search' class="searchbar">
 			<input type='submit' name='submit' value='Search'class="searchbutton" >
 			<img src="search.png" class="search"/>
-	</form>	
-	<button onclick="myFunction()">Print this page</button>
-	<fieldset style="text-align:left; margin: left;" class="cancel">
-		<legend> Confirmation Details</legend>
+		</form>
+		
 		<div id="middlerecord" class="scroll" style="float:center;">
 			<?php
 				$db = mysql_connect('localhost','root','root');
 				mysql_select_db('sacredheart');
-				$query = "SELECT * FROM confirmation INNER JOIN reservation ON confirmation.reserve_id=reservation.id INNER JOIN recollection_package ON reservation.recollection_id=recollection_package.id where confirmation.payment_status = 'Unpaid' ORDER BY confirmation.id ASC";
+				$query = "SELECT * FROM reservation INNER JOIN recollection_package ON reservation.recollection_id=recollection_package.id INNER JOIN confirm_client ON reservation.client_id=confirm_client.id where reservation.status = 'Pending' ORDER BY reservation.id ASC";
 				$r = mysql_query($query);
 				$rows = mysql_num_rows($r);
-				$query2 = "SELECT * FROM confirmation INNER JOIN reservation ON confirmation.reserve_id=reservation.id INNER JOIN retreat_package ON reservation.retreat_id=retreat_package.id where confirmation.payment_status = 'Unpaid' ORDER BY confirmation.id ASC";
+				
+				$query2 = "SELECT * FROM reservation INNER JOIN retreat_package ON reservation.retreat_id=retreat_package.id INNER JOIN confirm_client ON reservation.client_id=confirm_client.id where reservation.status = 'Pending' ORDER BY reservation.id ASC";
 				$r2 = mysql_query($query2);
 				$rows2 = mysql_num_rows($r2);
-				echo "<h4>Recollection</h4>";
+				echo "<h4>Recollection Reservation Details</h4>";
 				echo "<table border='1'>";
-				echo "<tr><th>Client's Name</th><th>Check-In Date</th><th>Check-Out Date</th><th>Guests</th><th>Package Name</th><th>Package Amount</th><th>Payment Status</th></tr>";
+				echo "<tr><th> Name</th><th>Check-In Date</th><th>Check-Out Date</th><th>Guests</th><th>Type of Reservation</th><th>Recollection Package</th><th>Status</th></tr>";
 				for($i=0; $i < $rows; $i++){
-					echo "<tr><td><p>";
-					echo mysql_result($r, $i, 'confirmation.client_name');
+					echo "<td><p>";
+					echo mysql_result($r, $i, 'confirm_client.name');
 					echo "</p></td><td><p>";
 					echo mysql_result($r, $i, 'reservation.checkin_date');
 					echo "</p></td><td><p>";
 					echo mysql_result($r, $i, 'reservation.checkout_date');
 					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'confirmation.guest');
+					echo mysql_result($r, $i, 'reservation.guest');
+					echo "</p></td><td><p>";
+					echo mysql_result($r, $i, 'reservation.type');
 					echo "</p></td><td><p>";
 					echo mysql_result($r, $i, 'recollection_package.service_name');
 					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'recollection_package.amount');
+					echo mysql_result($r, $i, 'reservation.status');
 					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'confirmation.payment_status');
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm.php? id=";
+					echo "<a href='editreservation.php? id=";
 					echo mysql_result($r, $i, 'id');
-					echo "'>Add Payment</a>";
+					echo "'>Edit</a>";
+					/*echo "</p></td><td><p>";
+					echo "<a href='beforedeletereservation.php? id=";
+					echo mysql_result($r, $i, 'id');
+					echo "'>Delete</a>";*/
 					echo "</p></td></tr>";
 				}
 				echo "</table>";
-				echo "<h4>Retreat</h4>";
+				
+				echo "<h4>Retreat Reservation Details</h4>";
 				echo "<table border='1'>";
-				echo "<tr><th>Client's Name</th><th>Check-In Date</th><th>Check-Out Date</th><th>Guests</th><th>Package Name</th><th>Package Amount</th><th>Payment Status</th></tr>";
+				echo "<tr><th> Name</th><th>Check-In Date</th><th>Check-Out Date</th><th>Guests</th><th>Type of Reservation</th><th>Retreat Package</th><th>Status</th></tr>";
 				for($j=0; $j < $rows2; $j++){
-					echo "<tr><td><p>";
-					echo mysql_result($r2, $j, 'confirmation.client_name');
+					echo "<td><p>";
+					echo mysql_result($r2, $j, 'confirm_client.name');
 					echo "</p></td><td><p>";
 					echo mysql_result($r2, $j, 'reservation.checkin_date');
 					echo "</p></td><td><p>";
 					echo mysql_result($r2, $j, 'reservation.checkout_date');
 					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'confirmation.guest');
+					echo mysql_result($r2, $j, 'reservation.guest');
+					echo "</p></td><td><p>";
+					echo mysql_result($r2, $j, 'reservation.type');
 					echo "</p></td><td><p>";
 					echo mysql_result($r2, $j, 'retreat_package.service_name');
 					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'retreat_package.amount');
+					echo mysql_result($r2, $j, 'reservation.status');
 					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'confirmation.payment_status');
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm.php? id=";
+					echo "<a href='editreservation.php? id=";
 					echo mysql_result($r2, $j, 'id');
-					echo "'>Add Payment</a>";
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm2.php? id=";
-					echo mysql_result($r2, $j, 'id');
-					echo "'>Details</a>";
+					echo "'>Edit</a>";
+					/*echo "</p></td><td><p>";
+					echo "<a href='beforedeletereservation.php? id=";
+					echo mysql_result($r, $i, 'id');
+					echo "'>Delete</a>";*/
 					echo "</p></td></tr>";
 				}
 				echo "</table>";
 				mysql_close($db);
 			?>	
 		</div>
-	</fieldset>	
+	</fieldset>
+	<br/>
+	<fieldset style="text-align:left; margin: left;" class="cancel">
+		<legend> Cancelled Reservations</legend>
+		<div id="middlerecord" class="scroll" style="float:center;">
+			<?php
+				$db = mysql_connect('localhost','root','root');
+				mysql_select_db('sacredheart');
+				$query = "SELECT * FROM cancel_reservation INNER JOIN confirm_client ON cancel_reservation.client_id=confirm_client.id";
+				$r = mysql_query($query);
+				$rows = mysql_num_rows($r);
+				echo "<table border='1' >";
+				echo "<tr><th>Name</th><th>Check-In Date</th><th>Check-Out Date</th><th>Guests</th><th>Type</th><th>Date Modified</th></tr>";
+				for($i=0; $i < $rows; $i++){
+					echo "<tr><td><p>";
+					echo mysql_result($r, $i, 'confirm_client.name');
+					echo "</p></td><td><p>";
+					echo mysql_result($r, $i, 'cancel_reservation.checkin_date');
+					echo "</p></td><td><p>";
+					echo mysql_result($r, $i, 'cancel_reservation.checkout_date');
+					echo "</p></td><td><p>";
+					echo mysql_result($r, $i, 'cancel_reservation.guest');
+					echo "</p></td><td><p>";
+					echo mysql_result($r, $i, 'cancel_reservation.type');
+					echo "</p></td><td><p>";
+					echo mysql_result($r, $i, 'cancel_reservation.modify');
+					echo "</p></td></tr>";
+				}
+				echo "</table>";
+				mysql_close($db);
+			?>	
+		</div>
+	</fieldset>		
 </div>
 </body>
 </html>

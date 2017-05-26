@@ -220,7 +220,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
         </ul>
     </li>
     <li>
-   <li><a href="#">Payment</a>
+    <li><a href="#">Payment</a>
     	<ul class="sub-menu">
 		<li>
                <a href="finalpayment.php"> Paid Payments </a>
@@ -248,27 +248,25 @@ error_reporting(E_ALL ^ E_DEPRECATED);
     </li>
 	</ul>
 	</div>
-	<form action='searchreservation.php' method='GET'>
-			<input type='text' size='30' name='search' class="searchbar">
-			<input type='submit' name='submit' value='Search'class="searchbutton" >
-			<img src="search.png" class="search"/>
-	</form>	
-	<button onclick="myFunction()">Print this page</button>
+	<br/>
 	<fieldset style="text-align:left; margin: left;" class="cancel">
-		<legend> Confirmation Details</legend>
+		<legend> Paid Payment Details</legend>
 		<div id="middlerecord" class="scroll" style="float:center;">
 			<?php
 				$db = mysql_connect('localhost','root','root');
 				mysql_select_db('sacredheart');
-				$query = "SELECT * FROM confirmation INNER JOIN reservation ON confirmation.reserve_id=reservation.id INNER JOIN recollection_package ON reservation.recollection_id=recollection_package.id where confirmation.payment_status = 'Unpaid' ORDER BY confirmation.id ASC";
+				
+				$query = "SELECT * FROM payment INNER JOIN confirmation ON payment.confirm_id=confirmation.id INNER JOIN reservation ON confirmation.reserve_id=reservation.id INNER JOIN retreat_package ON reservation.retreat_id=retreat_package.id";
 				$r = mysql_query($query);
 				$rows = mysql_num_rows($r);
-				$query2 = "SELECT * FROM confirmation INNER JOIN reservation ON confirmation.reserve_id=reservation.id INNER JOIN retreat_package ON reservation.retreat_id=retreat_package.id where confirmation.payment_status = 'Unpaid' ORDER BY confirmation.id ASC";
+				
+				$query2 = "SELECT * FROM payment INNER JOIN confirmation ON payment.confirm_id=confirmation.id INNER JOIN reservation ON confirmation.reserve_id=reservation.id INNER JOIN recollection_package ON reservation.recollection_id=recollection_package.id";
 				$r2 = mysql_query($query2);
 				$rows2 = mysql_num_rows($r2);
-				echo "<h4>Recollection</h4>";
-				echo "<table border='1'>";
-				echo "<tr><th>Client's Name</th><th>Check-In Date</th><th>Check-Out Date</th><th>Guests</th><th>Package Name</th><th>Package Amount</th><th>Payment Status</th></tr>";
+				
+				echo "<h4>Retreat</h4>";
+				echo "<table border='0'>";
+				echo "<tr><th>Client's Name</th><th>Check-In Date</th><th>Check-Out Date</th><th># of Participated Guests</th><th>Type of Event</th><th>Package Name</th><th>Package Amount</th><th>Actual Balance</th><th>Amount Paid</th><th>Change</th><th>Transaction Date</th><th>Payment Status</th></tr>";
 				for($i=0; $i < $rows; $i++){
 					echo "<tr><td><p>";
 					echo mysql_result($r, $i, 'confirmation.client_name');
@@ -279,21 +277,28 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 					echo "</p></td><td><p>";
 					echo mysql_result($r, $i, 'confirmation.guest');
 					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'recollection_package.service_name');
+					echo mysql_result($r, $i, 'reservation.type');
 					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'recollection_package.amount');
+					echo mysql_result($r, $i, 'retreat_package.service_name');
+					echo "</p></td><td><p>";
+					echo mysql_result($r, $i, 'retreat_package.amount');
+					echo "</p></td><td><p>";
+					echo mysql_result($r, $i, 'payment.actual_balance');
+					echo "</p></td><td><p>";
+					echo mysql_result($r, $i, 'payment.amount_paid');
+					echo "</p></td><td><p>";
+					echo mysql_result($r, $i, 'payment.changer');
+					echo "</p></td><td><p>";
+					echo mysql_result($r, $i, 'payment.paid_date');
 					echo "</p></td><td><p>";
 					echo mysql_result($r, $i, 'confirmation.payment_status');
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm.php? id=";
-					echo mysql_result($r, $i, 'id');
-					echo "'>Add Payment</a>";
 					echo "</p></td></tr>";
 				}
 				echo "</table>";
-				echo "<h4>Retreat</h4>";
-				echo "<table border='1'>";
-				echo "<tr><th>Client's Name</th><th>Check-In Date</th><th>Check-Out Date</th><th>Guests</th><th>Package Name</th><th>Package Amount</th><th>Payment Status</th></tr>";
+				
+				echo "<h4>Recollection</h4>";
+				echo "<table border='0'>";
+				echo "<tr><th>Client's Name</th><th>Check-In Date</th><th>Check-Out Date</th><th># of Participated Guests</th><th>Type of Event</th><th>Package Name</th><th>Package Amount</th><th>Actual Balance</th><th>Amount Paid</th><th>Change</th><th>Transaction Date</th><th>Payment Status</th></tr>";
 				for($j=0; $j < $rows2; $j++){
 					echo "<tr><td><p>";
 					echo mysql_result($r2, $j, 'confirmation.client_name');
@@ -304,19 +309,21 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 					echo "</p></td><td><p>";
 					echo mysql_result($r2, $j, 'confirmation.guest');
 					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'retreat_package.service_name');
+					echo mysql_result($r2, $j, 'reservation.type');
 					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'retreat_package.amount');
+					echo mysql_result($r2, $j, 'recollection_package.service_name');
+					echo "</p></td><td><p>";
+					echo mysql_result($r2, $j, 'recollection_package.amount');
+					echo "</p></td><td><p>";
+					echo mysql_result($r2, $j, 'payment.actual_balance');
+					echo "</p></td><td><p>";
+					echo mysql_result($r2, $j, 'payment.amount_paid');
+					echo "</p></td><td><p>";
+					echo mysql_result($r2, $j, 'payment.changer');
+					echo "</p></td><td><p>";
+					echo mysql_result($r2, $j, 'payment.paid_date');
 					echo "</p></td><td><p>";
 					echo mysql_result($r2, $j, 'confirmation.payment_status');
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm.php? id=";
-					echo mysql_result($r2, $j, 'id');
-					echo "'>Add Payment</a>";
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm2.php? id=";
-					echo mysql_result($r2, $j, 'id');
-					echo "'>Details</a>";
 					echo "</p></td></tr>";
 				}
 				echo "</table>";

@@ -1,11 +1,14 @@
 <?php
+
 error_reporting(E_ALL ^ E_DEPRECATED);
 ?>
 <html>
 <head>
 	<style>
 	body{
+
 			background-color: #FEFCFF;
+
 		}
 	label{
 			font-family: century gothic;
@@ -26,6 +29,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		top: 45px;
 		right: 135px;
 	}
+
 	h4.home{
 
 		position: absolute;
@@ -33,7 +37,9 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		left: 83px;
 		color: #FFFFFF;
 		font-family: century gothic;
+		
 	}
+	
 	h4.logout{
 		position: absolute;
 		top: 23px;
@@ -45,6 +51,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 
 		color: #FF0000;
 	}
+
 	input.searchbar{
 
 		position: absolute;
@@ -105,7 +112,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
     background-color: #000000;
 	color: #000000;
 	}
-	fieldset.reservation, fieldset.cancel{
+	fieldset.reserve{
 	-moz-border-radius: 15px;
 	border-radius: 15px;
 	border:solid 2px black;
@@ -120,21 +127,12 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 	th{
 		font-family: candara;
 		font-size: 15px;
-		width: 200px;
-		background-color: #000000;
-		color: #FFFFFF;
+
 	}
-	fieldset.donation{
-		width: 500px;
-		margin:auto;
-	}
-	button{
-		float: right;
-		-moz-border-radius: 7px;
-		border-radius: 7px;
-		border:solid 1.5px black;
-		padding: 3px;
-		background-color: #4AA02C;
+	td{
+
+		font-family: century gothic;
+		text-align: left;
 	}
 	#wrapper{
 		width:1350px;
@@ -142,10 +140,8 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		position:relative;
 	}
 	</style>
-	<script>
-	function myFunction(){
-		window.open("paymentPrint.php");
-	}
+
+	<script language="javascript" type="text/javascript" src="datetimepicker.js"> 
 	</script>
 </head>
 <body>
@@ -194,7 +190,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
     </li>
     <li>
         <a href="#">Rooms</a>
-		<ul class="sub-menu">
+		<ul class="sub-menu"> 
             <li>
             	<a href="rooms.php"> Rooms </a>
             </li>
@@ -220,7 +216,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
         </ul>
     </li>
     <li>
-   <li><a href="#">Payment</a>
+    <li><a href="#">Payment</a>
     	<ul class="sub-menu">
 		<li>
                <a href="finalpayment.php"> Paid Payments </a>
@@ -248,82 +244,72 @@ error_reporting(E_ALL ^ E_DEPRECATED);
     </li>
 	</ul>
 	</div>
-	<form action='searchreservation.php' method='GET'>
-			<input type='text' size='30' name='search' class="searchbar">
-			<input type='submit' name='submit' value='Search'class="searchbutton" >
-			<img src="search.png" class="search"/>
-	</form>	
-	<button onclick="myFunction()">Print this page</button>
-	<fieldset style="text-align:left; margin: left;" class="cancel">
-		<legend> Confirmation Details</legend>
-		<div id="middlerecord" class="scroll" style="float:center;">
-			<?php
+	<div style="height: 40px"></div>
+	<form name="addreservations2" action="addreservations2.php" method="post">
+	<div id="middlerecord" style="margin: 0 auto; width:400px">
+	<fieldset style="text-align:left; margin: left;" class="reserve">
+	<legend>Reservation Form </legend>
+		<table border = "0" align="center" class = 'tab'>
+			<tr>
+			<td> Client's Name</td>
+			<td>
+				<?php
 				$db = mysql_connect('localhost','root','root');
 				mysql_select_db('sacredheart');
-				$query = "SELECT * FROM confirmation INNER JOIN reservation ON confirmation.reserve_id=reservation.id INNER JOIN recollection_package ON reservation.recollection_id=recollection_package.id where confirmation.payment_status = 'Unpaid' ORDER BY confirmation.id ASC";
-				$r = mysql_query($query);
-				$rows = mysql_num_rows($r);
-				$query2 = "SELECT * FROM confirmation INNER JOIN reservation ON confirmation.reserve_id=reservation.id INNER JOIN retreat_package ON reservation.retreat_id=retreat_package.id where confirmation.payment_status = 'Unpaid' ORDER BY confirmation.id ASC";
-				$r2 = mysql_query($query2);
-				$rows2 = mysql_num_rows($r2);
-				echo "<h4>Recollection</h4>";
-				echo "<table border='1'>";
-				echo "<tr><th>Client's Name</th><th>Check-In Date</th><th>Check-Out Date</th><th>Guests</th><th>Package Name</th><th>Package Amount</th><th>Payment Status</th></tr>";
-				for($i=0; $i < $rows; $i++){
-					echo "<tr><td><p>";
-					echo mysql_result($r, $i, 'confirmation.client_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'reservation.checkin_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'reservation.checkout_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'confirmation.guest');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'recollection_package.service_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'recollection_package.amount');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'confirmation.payment_status');
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm.php? id=";
-					echo mysql_result($r, $i, 'id');
-					echo "'>Add Payment</a>";
-					echo "</p></td></tr>";
+				$query="SELECT * FROM confirm_client";
+				$result = mysql_query($query);
+				$options="";
+				echo "<select name='client_id' id = 'client_id' value=''>
+				<option>Please Select A Name</option> ";
+
+				while($nt=mysql_fetch_array($result))
+				{
+					echo "<option value='".$nt['id']."'>".$nt['name']."</option>";
 				}
-				echo "</table>";
-				echo "<h4>Retreat</h4>";
-				echo "<table border='1'>";
-				echo "<tr><th>Client's Name</th><th>Check-In Date</th><th>Check-Out Date</th><th>Guests</th><th>Package Name</th><th>Package Amount</th><th>Payment Status</th></tr>";
-				for($j=0; $j < $rows2; $j++){
-					echo "<tr><td><p>";
-					echo mysql_result($r2, $j, 'confirmation.client_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'reservation.checkin_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'reservation.checkout_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'confirmation.guest');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'retreat_package.service_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'retreat_package.amount');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'confirmation.payment_status');
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm.php? id=";
-					echo mysql_result($r2, $j, 'id');
-					echo "'>Add Payment</a>";
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm2.php? id=";
-					echo mysql_result($r2, $j, 'id');
-					echo "'>Details</a>";
-					echo "</p></td></tr>";
-				}
-				echo "</table>";
+				echo "</select>";
 				mysql_close($db);
-			?>	
-		</div>
-	</fieldset>	
+				?>	
+			</td>
+			</tr>
+			<tr>
+				<td>Check-In Date</td>
+				<td><input type = 'text' name = 'checkinDate' id = 'checkinDate'>
+				<a href="javascript:NewCal('checkinDate','yyyymmdd',24)"><img src="dateCalendar.jpg" width="16" height="16" border="0" alt="Pick a date">
+				</a>
+				</td>
+			</tr>
+			<tr>
+				<td>Check-Out Date </td>
+				<td><input type = 'text' name = 'checkoutDate' id = 'checkoutDate'>
+				<a href="javascript:NewCal('checkoutDate','yyyymmdd',24)"><img src="dateCalendar.jpg" width="16" height="16" border="0" alt="Pick a date">
+				</a>
+				</td>
+			</tr>
+			<tr>
+				<td> No. of guests </td> <td> <input type = "text" name = "guest" id = "guest" size = "10"/></td>
+			</tr>
+			<tr>
+				<td> Type of Reservation </td>
+				<td><select name = "type" id = "type">
+					<option value = ""> </option>
+					<option value = "Retreat"> Retreat </option>
+					<option value = "Recollection"> Recollection </option>
+				</select></td>
+			</tr>
+			<tr>
+				<td colspan='2'><p style="color:red;">Reservation Date already exists!</p></td>
+			</tr>
+			</table>
+			<table align="center" class = "tab2">
+				<tr>
+				<td><button type = "submit" style="background-color: #41A317; color: #FEFCFF"> Reserve Now </button> 
+				<button type = "reset" style="background-color: #990012; color: #FEFCFF"> Clear </button> </td>
+				</tr>
+			</table>
+			
+		</fieldset>
+		</div>					
+		</form>
 </div>
 </body>
 </html>

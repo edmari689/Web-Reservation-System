@@ -262,50 +262,134 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		<input type='submit' name='submit' value='Search'class="searchbutton" >
 		<img src="search.png" class="search"/>
 	</form>
-	
 	<?php
-		$room_no = $_REQUEST['room_no'];
+		$id = $_REQUEST['id'];
 		$db = mysql_connect('localhost','root','root');
 		mysql_select_db('sacredheart');
 		
-		$query = "SELECT room_no FROM room_details where room_no = '$room_no'";
-		$r = mysql_query($query);
+		$recPaid = "SELECT * FROM confirm_client INNER JOIN reservation ON confirm_client.id=reservation.client_id INNER JOIN confirmation ON reservation.id=confirmation.reserve_id INNER JOIN payment ON confirmation.id=payment.confirm_id INNER JOIN recollection_package ON reservation.recollection_id=recollection_package.id where confirm_client.id = '$id' and confirmation.payment_status = 'Paid'";
+		$r = mysql_query($recPaid);
 		$rows = mysql_num_rows($r);
 		
-		for($i=0; $i < $rows; $i++)
-		{
-			echo "<fieldset style='text-align:left; margin: left; float:left;' class='donation'>";
-			echo "<legend> Room ";
-			echo mysql_result($r, $i, 'room_no');
-			echo "</legend>";
-			
-			$query4 = "SELECT * FROM guest_room_usage INNER JOIN guest ON guest_room_usage.guest_no=guest.id INNER JOIN room_details ON guest_room_usage.room_no=room_details.room_no INNER JOIN confirmation ON guest_room_usage.confirm_id=confirmation.reserve_id INNER JOIN reservation ON confirmation.reserve_id=reservation.id WHERE now() between reservation.checkin_date and reservation.checkout_date and guest_room_usage.room_no='$room_no'";
-			$r4 = mysql_query($query4);
-			$rows4 = mysql_num_rows($r4);
-			echo "<table border='0' style='float: left'>";
-			echo "<tr><th>Guest Name</th><th>Sex</th><th>Check-In Date</th><th colspan = '2'>Actions</th></tr>";
-			for($l=0; $l < $rows4; $l++){
-				echo "<td><p>";
-				echo mysql_result($r4, $l, 'guest.name');
-				echo "</p></td><td><p>";
-				echo mysql_result($r4, $l, 'guest.sex');
-				echo "</p></td><td><p>";
-				echo mysql_result($r4, $l, 'guest_room_usage.checkin_date');
-				echo "</p></td><td><p>";
-				echo "<a href='beforetransfer.php? id=";
-				echo mysql_result($r4, $l, 'id');
-				echo "'>Transfer Room</a>";
-				echo "</p></td><td><p>";
-				echo "<a href='beforecheckout.php? id=";
-				echo mysql_result($r4, $l, 'id');
-				echo "'>Check-Out</a>";
-				echo "</p></td></tr>";
-			}
-			echo "</table>";
-			echo "</fieldset>";
+		$retPaid = "SELECT * FROM confirm_client INNER JOIN reservation ON confirm_client.id=reservation.client_id INNER JOIN confirmation ON reservation.id=confirmation.reserve_id INNER JOIN payment ON confirmation.id=payment.confirm_id INNER JOIN retreat_package ON reservation.retreat_id=retreat_package.id where confirm_client.id = '$id' and confirmation.payment_status = 'Paid'";
+		$r2 = mysql_query($retPaid);
+		$rows2 = mysql_num_rows($r2);
+		
+		$recUnpaid = "SELECT * FROM confirm_client INNER JOIN reservation ON confirm_client.id=reservation.client_id INNER JOIN confirmation ON reservation.id=confirmation.reserve_id INNER JOIN recollection_package ON reservation.recollection_id=recollection_package.id where confirm_client.id = '$id' and confirmation.payment_status = 'Unpaid'";
+		$r3 = mysql_query($recUnpaid);
+		$rows3 = mysql_num_rows($r3);
+		
+		$retUnpaid = "SELECT * FROM confirm_client INNER JOIN reservation ON confirm_client.id=reservation.client_id INNER JOIN confirmation ON reservation.id=confirmation.reserve_id INNER JOIN retreat_package ON reservation.retreat_id=retreat_package.id where confirm_client.id = '$id' and confirmation.payment_status = 'Unpaid'";
+		$r4 = mysql_query($retUnpaid);
+		$rows4 = mysql_num_rows($r4);
+		
+		echo "<fieldset style='text-align:left; margin: left; -moz-border-radius: 15px; border-radius: 15px; border:solid 2px black;'>";
+		echo "<table border='1'>";
+		echo "<tr><th>Type of Event</th><th>Package Name</th><th>Package Amount</th><th>Check-In Date</th><th>Check-Out Date</th><th># of Guests</th><th>Payment Status</th><th>Package Name</th><th>Type of Event</th><th>Package Name</th><th>Type of Event</th></tr>";
+		
+		for($i=0; $i < $rows; $i++){
+			echo "<tr><td><p>";
+			echo mysql_result($r, $i, 'reservation.type');
+			echo "</p></td><td><p>";
+			echo mysql_result($r, $i, 'recollection_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r, $i, 'recollection_package.amount');
+			echo "</p></td><td><p>";
+			echo mysql_result($r, $i, 'reservation.checkin_date');
+			echo "</p></td><td><p>";
+			echo mysql_result($r, $i, 'reservation.checkout_date');
+			echo "</p></td><td><p>";
+			echo mysql_result($r, $i, 'confirmation.guest');
+			echo "</p></td><td><p>";
+			echo mysql_result($r, $i, 'confirmation.payment_status');
+			echo "</p></td><td><p>";
+			echo mysql_result($r, $i, 'recollection_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r, $i, 'recollection_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r, $i, 'recollection_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r, $i, 'recollection_package.service_name');
+			echo "</p></td></tr>";
 		}
+		for($j=0; $j < $rows2; $j++){
+			echo "<tr><td><p>";
+			echo mysql_result($r2, $j, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r2, $j, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r2, $j, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r2, $j, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r2, $j, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r2, $j, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r2, $j, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r2, $j, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r2, $j, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r2, $j, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r2, $j, 'retreat_package.service_name');
+			echo "</p></td></tr>";
+		}
+		for($k=0; $k < $rows3; $k++){
+			echo "<tr><td><p>";
+			echo mysql_result($r3, $k, 'recollection_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r3, $k, 'recollection_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r3, $k, 'recollection_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r3, $k, 'recollection_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r3, $k, 'recollection_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r3, $k, 'recollection_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r3, $k, 'recollection_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r3, $k, 'recollection_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r3, $k, 'recollection_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r3, $k, 'recollection_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r3, $k, 'recollection_package.service_name');
+			echo "</p></td></tr>";
+		}
+		for($l=0; $l < $rows4; $l++){
+			echo "<tr><td><p>";
+			echo mysql_result($r4, $l, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r4, $l, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r4, $l, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r4, $l, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r4, $l, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r4, $l, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r4, $l, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r4, $l, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r4, $l, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r4, $l, 'retreat_package.service_name');
+			echo "</p></td><td><p>";
+			echo mysql_result($r4, $l, 'retreat_package.service_name');
+			echo "</p></td></tr>";
+		}
+		echo "<table>";
+		echo "</fieldset>";
 	?>
-	
 </div>
 </body>
 </html>

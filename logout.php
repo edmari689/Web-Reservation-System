@@ -1,8 +1,5 @@
 <?php
-	session_start();
-	if(isset($_SESSION['id']))
-	{
-		session_destroy();
-		header("location: homepage.php");
-	}
+session_start();
+session_destroy();
+header("location: adminlog.php");
 ?>

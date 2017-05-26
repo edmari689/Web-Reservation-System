@@ -1,11 +1,14 @@
 <?php
+
 error_reporting(E_ALL ^ E_DEPRECATED);
 ?>
 <html>
 <head>
 	<style>
 	body{
+
 			background-color: #FEFCFF;
+
 		}
 	label{
 			font-family: century gothic;
@@ -26,6 +29,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		top: 45px;
 		right: 135px;
 	}
+
 	h4.home{
 
 		position: absolute;
@@ -33,7 +37,9 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		left: 83px;
 		color: #FFFFFF;
 		font-family: century gothic;
+		
 	}
+	
 	h4.logout{
 		position: absolute;
 		top: 23px;
@@ -45,6 +51,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 
 		color: #FF0000;
 	}
+
 	input.searchbar{
 
 		position: absolute;
@@ -105,7 +112,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
     background-color: #000000;
 	color: #000000;
 	}
-	fieldset.reservation, fieldset.cancel{
+	fieldset{
 	-moz-border-radius: 15px;
 	border-radius: 15px;
 	border:solid 2px black;
@@ -120,21 +127,11 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 	th{
 		font-family: candara;
 		font-size: 15px;
-		width: 200px;
-		background-color: #000000;
-		color: #FFFFFF;
+
 	}
-	fieldset.donation{
-		width: 500px;
-		margin:auto;
-	}
-	button{
-		float: right;
-		-moz-border-radius: 7px;
-		border-radius: 7px;
-		border:solid 1.5px black;
-		padding: 3px;
-		background-color: #4AA02C;
+	td{
+		font-family: century gothic;
+		text-align: left;
 	}
 	#wrapper{
 		width:1350px;
@@ -144,7 +141,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 	</style>
 	<script>
 	function myFunction(){
-		window.open("paymentPrint.php");
+		window.open("servicePrint.php");
 	}
 	</script>
 </head>
@@ -220,7 +217,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
         </ul>
     </li>
     <li>
-   <li><a href="#">Payment</a>
+    <li><a href="#">Payment</a>
     	<ul class="sub-menu">
 		<li>
                <a href="finalpayment.php"> Paid Payments </a>
@@ -247,83 +244,87 @@ error_reporting(E_ALL ^ E_DEPRECATED);
         </ul>
     </li>
 	</ul>
-	</div>
-	<form action='searchreservation.php' method='GET'>
-			<input type='text' size='30' name='search' class="searchbar">
-			<input type='submit' name='submit' value='Search'class="searchbutton" >
-			<img src="search.png" class="search"/>
-	</form>	
-	<button onclick="myFunction()">Print this page</button>
-	<fieldset style="text-align:left; margin: left;" class="cancel">
-		<legend> Confirmation Details</legend>
-		<div id="middlerecord" class="scroll" style="float:center;">
-			<?php
-				$db = mysql_connect('localhost','root','root');
-				mysql_select_db('sacredheart');
-				$query = "SELECT * FROM confirmation INNER JOIN reservation ON confirmation.reserve_id=reservation.id INNER JOIN recollection_package ON reservation.recollection_id=recollection_package.id where confirmation.payment_status = 'Unpaid' ORDER BY confirmation.id ASC";
-				$r = mysql_query($query);
-				$rows = mysql_num_rows($r);
-				$query2 = "SELECT * FROM confirmation INNER JOIN reservation ON confirmation.reserve_id=reservation.id INNER JOIN retreat_package ON reservation.retreat_id=retreat_package.id where confirmation.payment_status = 'Unpaid' ORDER BY confirmation.id ASC";
-				$r2 = mysql_query($query2);
-				$rows2 = mysql_num_rows($r2);
-				echo "<h4>Recollection</h4>";
-				echo "<table border='1'>";
-				echo "<tr><th>Client's Name</th><th>Check-In Date</th><th>Check-Out Date</th><th>Guests</th><th>Package Name</th><th>Package Amount</th><th>Payment Status</th></tr>";
-				for($i=0; $i < $rows; $i++){
-					echo "<tr><td><p>";
-					echo mysql_result($r, $i, 'confirmation.client_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'reservation.checkin_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'reservation.checkout_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'confirmation.guest');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'recollection_package.service_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'recollection_package.amount');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'confirmation.payment_status');
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm.php? id=";
-					echo mysql_result($r, $i, 'id');
-					echo "'>Add Payment</a>";
-					echo "</p></td></tr>";
-				}
-				echo "</table>";
-				echo "<h4>Retreat</h4>";
-				echo "<table border='1'>";
-				echo "<tr><th>Client's Name</th><th>Check-In Date</th><th>Check-Out Date</th><th>Guests</th><th>Package Name</th><th>Package Amount</th><th>Payment Status</th></tr>";
-				for($j=0; $j < $rows2; $j++){
-					echo "<tr><td><p>";
-					echo mysql_result($r2, $j, 'confirmation.client_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'reservation.checkin_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'reservation.checkout_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'confirmation.guest');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'retreat_package.service_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'retreat_package.amount');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'confirmation.payment_status');
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm.php? id=";
-					echo mysql_result($r2, $j, 'id');
-					echo "'>Add Payment</a>";
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm2.php? id=";
-					echo mysql_result($r2, $j, 'id');
-					echo "'>Details</a>";
-					echo "</p></td></tr>";
-				}
-				echo "</table>";
-				mysql_close($db);
-			?>	
-		</div>
-	</fieldset>	
+	<br/>
+	<fieldset style="width: 400px; margin: 0 auto;background-color:#FFF5EE;">
+		<legend> Add Recollection Package Rates </legend> 
+	
+	
+	<form action ='addrecollectionrates.php' method ='POST'>
+	<table align = "center" class = "tab">
+	<tr>
+		<td>Kind of Package</td>
+		<td><input type="text" name="service_name" id="service_name">
+	</tr>
+	<tr>
+		<td>Type of Guest</td>
+		<td><select name = "type" id = "type">
+					<option value = ""> </option>
+					<option value = "Student"> Student </option>
+					<option value = "Regular"> Regular </option>
+		</select>
+		</td>
+	</tr>
+	<tr>
+	<td>Amount</td>
+	<td><input type = "text" name ="amount" id = "amount"/></td>
+	</tr>
+	<tr>
+		<td>Status</td>
+		<td><select name = "status" id = "status">
+					<option value = ""> </option>
+					<option value = "Available"> Available </option>
+					<option value = "Unavailable"> Unavailable </option>
+		</select>
+		</td>
+	</tr>
+	</table >
+	<br/>
+	<table align = "center">
+	<tr>
+	<td><button type = "submit" style="background-color: #41A317; color: #FEFCFF"> ADD </button> </td>
+	<td><button type = "reset" style="background-color: #990012; color: #FEFCFF"> CLEAR </button> </td>
+	</tr>
+	</table>
+	
+	
+	</form>
+	</fieldset>
+	<br/>
+	<fieldset style="width: 400px; margin: 0 auto;background-color:#FFF8DC;">
+		<legend> Add Retreat Package Rates </legend> 
+	
+	
+	<form action ='addretreatrates.php' method ='POST'>
+	<table align = "center" class = "tab">
+	<tr>
+		<td>Kind of Package</td>
+		<td><input type="text" name="service_name" id="service_name">
+	</tr>
+	<tr>
+	<td>Amount</td>
+	<td><input type = "text" name ="amount" id = "amount"/></td>
+	</tr>
+	<tr>
+		<td>Status</td>
+		<td><select name = "status" id = "status">
+					<option value = ""> </option>
+					<option value = "Available"> Available </option>
+					<option value = "Unavailable"> Unavailable </option>
+		</select>
+		</td>
+	</tr>
+	</table >
+	<br/>
+	<table align = "center">
+	<tr>
+	<td><button type = "submit" style="background-color: #41A317; color: #FEFCFF"> ADD </button> </td>
+	<td><button type = "reset" style="background-color: #990012; color: #FEFCFF"> CLEAR </button> </td>
+	</tr>
+	</table>
+	
+	
+	</form>
+	</fieldset>
 </div>
 </body>
 </html>

@@ -26,9 +26,7 @@ Version:  1.0
 Released: 2012-03-18
 */
 ###########################################################
-session_start();
-$name = $_SESSION['name'];
-$id = $_SESSION['id'];
+
 
 error_reporting(0);
 include("config.php");

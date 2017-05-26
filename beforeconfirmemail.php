@@ -1,11 +1,14 @@
 <?php
+
 error_reporting(E_ALL ^ E_DEPRECATED);
 ?>
 <html>
 <head>
 	<style>
 	body{
+
 			background-color: #FEFCFF;
+
 		}
 	label{
 			font-family: century gothic;
@@ -26,6 +29,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		top: 45px;
 		right: 135px;
 	}
+
 	h4.home{
 
 		position: absolute;
@@ -33,7 +37,9 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		left: 83px;
 		color: #FFFFFF;
 		font-family: century gothic;
+		
 	}
+	
 	h4.logout{
 		position: absolute;
 		top: 23px;
@@ -45,6 +51,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 
 		color: #FF0000;
 	}
+
 	input.searchbar{
 
 		position: absolute;
@@ -112,10 +119,6 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 	}
 	legend{
 		font-family: verdana;
-		background-color: #FF8040;
-		color: #000000;
-		-moz-border-radius: 15px;
-		border-radius: 15px;
 	}
 	th{
 		font-family: candara;
@@ -123,10 +126,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		width: 200px;
 		background-color: #000000;
 		color: #FFFFFF;
-	}
-	fieldset.donation{
-		width: 500px;
-		margin:auto;
+
 	}
 	button{
 		float: right;
@@ -136,18 +136,25 @@ error_reporting(E_ALL ^ E_DEPRECATED);
 		padding: 3px;
 		background-color: #4AA02C;
 	}
+	legend{
+		background-color: #FF8040;
+		color: #000000;	
+		-moz-border-radius: 15px;
+		border-radius: 15px;	
+	}
 	#wrapper{
 		width:1350px;
 		height:auto;
 		position:relative;
 	}
 	</style>
-	<script>
-	function myFunction(){
-		window.open("paymentPrint.php");
-	}
-	</script>
 </head>
+
+	<script>
+		function myFunction(){
+			window.open("clientsPrint.php");
+		}
+	</script>
 <body>
 <div id="wrapper">
 	<div style="height: 80px; background-color: #2C3539">
@@ -194,7 +201,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
     </li>
     <li>
         <a href="#">Rooms</a>
-		<ul class="sub-menu">
+		<ul class="sub-menu">  
             <li>
             	<a href="rooms.php"> Rooms </a>
             </li>
@@ -220,7 +227,7 @@ error_reporting(E_ALL ^ E_DEPRECATED);
         </ul>
     </li>
     <li>
-   <li><a href="#">Payment</a>
+    <li><a href="#">Payment</a>
     	<ul class="sub-menu">
 		<li>
                <a href="finalpayment.php"> Paid Payments </a>
@@ -248,82 +255,91 @@ error_reporting(E_ALL ^ E_DEPRECATED);
     </li>
 	</ul>
 	</div>
-	<form action='searchreservation.php' method='GET'>
-			<input type='text' size='30' name='search' class="searchbar">
-			<input type='submit' name='submit' value='Search'class="searchbutton" >
-			<img src="search.png" class="search"/>
-	</form>	
-	<button onclick="myFunction()">Print this page</button>
-	<fieldset style="text-align:left; margin: left;" class="cancel">
-		<legend> Confirmation Details</legend>
+	<br/>
+	<fieldset style="text-align:left; margin: left; -moz-border-radius: 15px; border-radius: 15px; border:solid 2px black;" class="donation">
+		<legend> Pending Client </legend> 
+		<form name="confirmemail" action="confirmemail.php" method = "POST"> 	
 		<div id="middlerecord" class="scroll" style="float:center;">
 			<?php
+				$id = $_REQUEST['id'];
 				$db = mysql_connect('localhost','root','root');
 				mysql_select_db('sacredheart');
-				$query = "SELECT * FROM confirmation INNER JOIN reservation ON confirmation.reserve_id=reservation.id INNER JOIN recollection_package ON reservation.recollection_id=recollection_package.id where confirmation.payment_status = 'Unpaid' ORDER BY confirmation.id ASC";
+				$query = "SELECT * FROM pending_client where id='$id'";
 				$r = mysql_query($query);
 				$rows = mysql_num_rows($r);
-				$query2 = "SELECT * FROM confirmation INNER JOIN reservation ON confirmation.reserve_id=reservation.id INNER JOIN retreat_package ON reservation.retreat_id=retreat_package.id where confirmation.payment_status = 'Unpaid' ORDER BY confirmation.id ASC";
-				$r2 = mysql_query($query2);
-				$rows2 = mysql_num_rows($r2);
-				echo "<h4>Recollection</h4>";
-				echo "<table border='1'>";
-				echo "<tr><th>Client's Name</th><th>Check-In Date</th><th>Check-Out Date</th><th>Guests</th><th>Package Name</th><th>Package Amount</th><th>Payment Status</th></tr>";
+				echo "<table border='0'>";
+				echo "<tr><th>Name</th><th>Company Name</th><th>Company Address</th><th>Contact</th><th>Sex</th><th>Email Address</th><th>Username</th></tr>";
 				for($i=0; $i < $rows; $i++){
-					echo "<tr><td><p>";
-					echo mysql_result($r, $i, 'confirmation.client_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'reservation.checkin_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'reservation.checkout_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'confirmation.guest');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'recollection_package.service_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'recollection_package.amount');
-					echo "</p></td><td><p>";
-					echo mysql_result($r, $i, 'confirmation.payment_status');
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm.php? id=";
-					echo mysql_result($r, $i, 'id');
-					echo "'>Add Payment</a>";
-					echo "</p></td></tr>";
-				}
-				echo "</table>";
-				echo "<h4>Retreat</h4>";
-				echo "<table border='1'>";
-				echo "<tr><th>Client's Name</th><th>Check-In Date</th><th>Check-Out Date</th><th>Guests</th><th>Package Name</th><th>Package Amount</th><th>Payment Status</th></tr>";
-				for($j=0; $j < $rows2; $j++){
-					echo "<tr><td><p>";
-					echo mysql_result($r2, $j, 'confirmation.client_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'reservation.checkin_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'reservation.checkout_date');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'confirmation.guest');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'retreat_package.service_name');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'retreat_package.amount');
-					echo "</p></td><td><p>";
-					echo mysql_result($r2, $j, 'confirmation.payment_status');
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm.php? id=";
-					echo mysql_result($r2, $j, 'id');
-					echo "'>Add Payment</a>";
-					echo "</p></td><td><p>";
-					echo "<a href='paymentForm2.php? id=";
-					echo mysql_result($r2, $j, 'id');
-					echo "'>Details</a>";
-					echo "</p></td></tr>";
+					echo "<tr><td><input type='text' name='name' id='name' value='";
+					echo mysql_result($r, $i, 'name');
+					echo "' readonly></td><td><input type='text' name='company_name' id='company_name' value='";
+					echo mysql_result($r, $i, 'company_name');
+					echo "' readonly></td><td><input type='text' name='company_address' id='company_address' value='";
+					echo mysql_result($r, $i, 'company_address');
+					echo "' readonly></td><td><input type='text' name='contact' id='contact' value='";
+					echo mysql_result($r, $i, 'contact');
+					echo "' readonly></td><td><input type='text' name='sex' id='sex' value='";
+					echo mysql_result($r, $i, 'sex');
+					echo "' readonly></td><td><input type='text' name='email' id='email' value='";
+					echo mysql_result($r, $i, 'email');
+					echo "' readonly></td><td><input type='text' name='user' id='user' value='";
+					echo mysql_result($r, $i, 'user');
+					echo "' readonly></td><td><input type='hidden' name='pass' id='pass' value='";
+					echo mysql_result($r, $i, 'pass');
+					echo "' readonly></td><td>";
+					echo "</td></tr>";
 				}
 				echo "</table>";
 				mysql_close($db);
 			?>	
+			<h4>Are you sure you want to confirm?</h4>
+			<table align="left">
+				<td><input type = "submit" name="confirm" value="Yes"/> </td></form>
+				<form name="back" action="clients.php"><td><input type = "submit" value="No"/> </td></form>
+			</table>
+			<input type="hidden" id="id" name="id" value="<?php echo $_REQUEST['id']; ?>" />
 		</div>
-	</fieldset>	
+		</form>
+	</fieldset>
 </div>
 </body>
 </html>
+<?php
+/*if($_POST['confirm'])
+{
+
+
+	$name = addslashes(strip_tags($_POST['name']));
+	$company_name = addslashes(strip_tags($_POST['company_name']));
+	$company_address = addslashes(strip_tags($_POST['company_address']));
+	$contact = addslashes(strip_tags($_POST['contact']));
+	$sex = addslashes(strip_tags($_POST['sex']));
+	$email = addslashes(strip_tags($_POST['email']));
+	$user = addslashes(strip_tags($_POST['user']));
+	$pass = addslashes(strip_tags($_POST['pass']));
+	$id = addslashes(strip_tags($_POST['id']));
+
+
+	
+	$to = $email;
+	$subject = "Activate you account";
+	$headers = "From: zenith_gean@yahoo.com";
+	$body = "Hello $user,\n\n You account has been confirmed by the Sacredhearts admin.Please Click on the link to sign in \n\nhttp://localhost/sacredheart/homepage.php\n\nThank You!";
+	
+	if(!mail($to,$subject,$body,$headers))
+	echo "We couldn't confirm this time!";
+	else
+	{
+	$before = "INSERT INTO confirm_client(name, company_name, company_address, contact, sex, email, user, pass, pending_client_id) 
+	VALUES((select name from pending_client where id='$id'), (select company_name from pending_client where id='$id'), (select company_address from pending_client where id='$id'), 
+	(select contact from pending_client where id='$id'), (select sex from pending_client where id='$id'), (select email from pending_client where id='$id'), (select user from pending_client where id='$id'),
+	(select pass from pending_client where id='$id'), $id)";
+	
+	$query = "DELETE FROM pending_client where id='$id'";
+	mysql_query($query);
+	
+	mysql_close($db);
+	header("Location:clients.php");
+}
+}*/
+?>
